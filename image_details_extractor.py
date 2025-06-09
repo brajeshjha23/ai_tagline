@@ -45,19 +45,17 @@ def generate_product_description(image_file_paths):
     instruction_text = (
         "You are a luxury fashion product analyst. Based on the above images, "
         "provide a detailed JSON output that includes:\n"
-        "1. Product name (if identifiable) or suggested generic name.\n"
-        "2. Materials and fabrics with texture details.\n"
-        "3. Aesthetic style, unique elements (e.g., modern minimalist, classic vintage).\n"
-        "4. Color palette and design motifs.\n"
-        "5. Possible brand heritage or historical influences if recognizable.\n"
-        "6. Suggested use-case or styling recommendations.\n"
-        "7. Any notable craftsmanship techniques visible.\n"
-        "Format the output strictly as JSON with keys matching the above points and no extra commentary."
-        "**Do not use the word 'logo','casual','handbag','modern'**"
+        "1. Product name (if identifiable)\n"
+        "2. Aesthetic style, unique elements.\n"
+        "3. Color palette and design motifs.\n"
+        "4. Possible brand heritage or historical influences if recognizable.\n"
+        "Format the output strictly as JSON with keys matching the above points and no extra commentary.\n"
+        "**Do not use the word 'logo','casual','handbag','modern','stiching'**\n"
+        "Do not give generic answers/characterstics, only mention, the things that can be seen.\n"
+        "Do not hallucinate, invent, assume any details, Else you will be heavily penalized."
     )
     message_content.append({"type": "text", "text": instruction_text})
 
-    # Call to the Mistral Pixtral model
     try:
         chat_response = client.chat.completions.create(
             model="gpt-4.1",

@@ -130,7 +130,7 @@ def get_tagline(product_attributes, product_description_image, analytics, compan
             "sophisticated", "fashion-forward individual", "modern wardrobe", "sophistication", 
             "we", "you", "casual day", "flair", "causal outings", "casual", 
             "brighter days", "metal material", "sophistication", "trust us", "day party", 
-            "fashion-savvy individual", "elegance", "elegant", "modern fashion", "modern"
+            "fashion-savvy individual", "elegance", "elegant", "modern fashion", "modern","precision edge painting"
         ]
     if company =="Coach":
         rules= coach_rules
@@ -251,11 +251,16 @@ def get_tagline(product_attributes, product_description_image, analytics, compan
     prod_old_description = remove_blacklisted_keywords(prod_old_description, blacklisted_keywords)
     prompt = [
     "Instructions:",
-    "**You must follow Instructions at any cost.**"
-    "You are given a set of rules. Follow them strictly to generate a new tagline (copy).",
-    "Do **not** repeat any words in the tagline.",
-    "Do not add 'what fits inside' in the Tagline.",
-    "**Strictly Prohibited: Do NOT Use Any of the Following Blacklisted Words (Severe Penalty Will Be Imposed) in generating Tagline:**",
+    "1. You are given a set of rules. Follow them exactly to generate a new tagline.",
+    "2. Do NOT repeat any word in the tagline.",
+    "3. Do NOT include the phrase “what fits inside.”",
+    "4. Do NOT include any city-specific references.",
+    "5. Do NOT mention pairing dress or attire.",
+    "6. Do NOT use general phrases—be product-specific.",
+    "7. Maintain a natural, authentic tone.",
+    "8. Strictly avoid all blacklisted words (severe penalty for violations).",
+    "9. Strictly follow the structure and the content of sample given, else you will be heavily penalized.",
+    "**You must follow Instructions and rules at any cost, else you will be heavily penalized.**",
     "####",
     "Rules:",
     f"{rules}",
@@ -263,7 +268,7 @@ def get_tagline(product_attributes, product_description_image, analytics, compan
     ]
 
     if prod_old_description != "":
-        prompt.append("Strictly follow the structure of sample given below, to generate the new tagline. Keep the structure same to the given sample. Do not add Blacklisted words.")
+        prompt.append("**Strictly follow the structure and the content of sample given below, to generate the new tagline. Keep the structure and content same to the given sample. Do not add Blacklisted words.**")
         prompt.append(f"{prod_old_description}")
 
     prompt += [
@@ -292,8 +297,6 @@ def get_tagline(product_attributes, product_description_image, analytics, compan
 
      # Dynamically iterate over every top-level key in the dictionary
     for key, value in product_attributes.items():
-        # Convert value to a nicely formatted JSON string (properly handle nested lists/dicts)
-        # We indent nested objects by two spaces for readability
         if key in ["What Fits Inside - en","Iteration","Tech Fit - en","Primary Digital Asset URL","Non-Primary Digital Asset URL"]:
             continue
         if value == "" or (isinstance(value, float) and math.isnan(value)):
@@ -323,12 +326,29 @@ def get_tagline(product_attributes, product_description_image, analytics, compan
 
     full_prompt = "\n".join(prompt)
 
+    system_prompts = [
+    "You are a world-class luxury fashion editor. Do NOT add Blacklisted Words in the tagline."
+    "Instructions:",
+    "1. You are given a set of rules. Follow them exactly to generate a new tagline.",
+    "2. Do NOT repeat any word in the tagline.",
+    "3. Do NOT include the phrase “what fits inside.”",
+    "4. Do NOT include any city-specific references.",
+    "5. Do NOT mention pairing dress or attire.",
+    "6. Do NOT use general phrases—be product-specific.",
+    "7. Maintain a natural, authentic tone.",
+    "8. Strictly avoid all blacklisted words (severe penalty for violations).",
+    "9. Strictly follow the structure and the content of sample given, else you will be heavily penalized.",
+    "**You must follow Instructions and rules at any cost, else you will be heavily penalized.**",
+    ]
+
+    system_prompts = "\n".join(system_prompts)
+
     # print(full_prompt)
 
     response = client.chat.completions.create(
             model="gpt-4.1",
             messages=[
-                {"role": "system", "content": "You are a world-class luxury fashion editor. DO not add Blacklisted Words in the tagline."},
+                {"role": "system", "content": system_prompts},
                 {"role": "user", "content": full_prompt}
             ],
             temperature=0.3,
@@ -356,6 +376,7 @@ def get_tagline(product_attributes, product_description_image, analytics, compan
     res["Matched OLD Mega PDP Value"] = matched_mega_values
     res["Prompt"] = full_prompt
     res["Match_Type"] = match_type
+    print(res["editorial_tagline"])
 
     return res
 
