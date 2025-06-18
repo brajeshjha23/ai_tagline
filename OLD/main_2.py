@@ -21,7 +21,7 @@ ngrok.set_auth_token("2xzc5Cq4UND7P5xOGoBgSMlxsVu_4ADaFx9BEhUyBz4V2SkH9")
 # Import existing modules
 from image_details_extractor import generate_product_description
 from tagline_generator import generate_luxury_tagline_from_json
-from analytics_matcher import match_headline_to_keyword
+from OLD.analytics_matcher import match_headline_to_keyword
 
 # Initialize FastAPI app
 app = FastAPI(
