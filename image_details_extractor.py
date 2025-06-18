@@ -21,7 +21,7 @@ def generate_product_description(image_file_paths):
 
     # Build the multimodal message content
     message_content = []
-    for idx, image_path in enumerate(image_file_paths, start=1):
+    for idx, image_path in enumerate(image_file_paths[:6], start=1):
         # Detect if the path is a URL (starts with http:// or https://)
         if image_path.startswith("http://") or image_path.startswith("https://"):
             # Directly append the ImageURLChunk for remote URLs
@@ -48,11 +48,11 @@ def generate_product_description(image_file_paths):
         "1. Product name (if identifiable)\n"
         "2. Aesthetic style, unique elements.\n"
         "3. Color palette and design motifs.\n"
-        "4. Possible brand heritage or historical influences if recognizable.\n"
         "Format the output strictly as JSON with keys matching the above points and no extra commentary.\n"
         "**Do not use the word 'logo','casual','handbag','modern','stiching'**\n"
         "Do not give generic answers/characterstics, only mention, the things that can be seen.\n"
         "Do not hallucinate, invent, assume any details, Else you will be heavily penalized."
+        "Do not give product name in the response."
     )
     message_content.append({"type": "text", "text": instruction_text})
 
